@@ -1,0 +1,33 @@
+{
+  "val_loss": 0.0009399594131132795,
+  "test_loss": 0.00018092776752180522,
+  "auc_test": 1.0,
+  "auc_val": 1.0,
+  "test_at_chosen_threshold": {
+    "threshold": 0.869463324546814,
+    "TN": 126,
+    "FP": 0,
+    "FN": 0,
+    "TP": 54,
+    "TPR(recall)": 1.0,
+    "FPR": 0.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "accuracy": 1.0,
+    "F1": 1.0
+  },
+  "test_at_0.5": {
+    "threshold": 0.5,
+    "TN": 126,
+    "FP": 0,
+    "FN": 0,
+    "TP": 54,
+    "TPR(recall)": 1.0,
+    "FPR": 0.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "accuracy": 1.0,
+    "F1": 1.0
+  },
+  "best_epoch": 13
+}
