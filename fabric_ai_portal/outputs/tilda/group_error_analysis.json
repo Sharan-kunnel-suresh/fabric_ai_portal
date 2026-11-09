@@ -1,0 +1,473 @@
+{
+    "threshold": 0.3198341429233551,
+    "total_test_groups": 60,
+    "groups_with_false_positives": 58,
+    "percentage_groups_affected": 96.66666666666667,
+    "total_false_positives": 395,
+    "ranked_groups": [
+        {
+            "group_id": "044",
+            "good_total": 48,
+            "good_false_positives": 19,
+            "defect_total": 16,
+            "defect_detected": 16,
+            "good_false_positive_rate": 0.3958333333333333
+        },
+        {
+            "group_id": "015",
+            "good_total": 61,
+            "good_false_positives": 14,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.22950819672131148
+        },
+        {
+            "group_id": "016",
+            "good_total": 63,
+            "good_false_positives": 14,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.2222222222222222
+        },
+        {
+            "group_id": "301",
+            "good_total": 63,
+            "good_false_positives": 14,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.2222222222222222
+        },
+        {
+            "group_id": "150",
+            "good_total": 56,
+            "good_false_positives": 13,
+            "defect_total": 8,
+            "defect_detected": 8,
+            "good_false_positive_rate": 0.23214285714285715
+        },
+        {
+            "group_id": "142",
+            "good_total": 57,
+            "good_false_positives": 13,
+            "defect_total": 7,
+            "defect_detected": 6,
+            "good_false_positive_rate": 0.22807017543859648
+        },
+        {
+            "group_id": "040",
+            "good_total": 60,
+            "good_false_positives": 13,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.21666666666666667
+        },
+        {
+            "group_id": "112",
+            "good_total": 59,
+            "good_false_positives": 11,
+            "defect_total": 5,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.1864406779661017
+        },
+        {
+            "group_id": "125",
+            "good_total": 61,
+            "good_false_positives": 11,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.18032786885245902
+        },
+        {
+            "group_id": "379",
+            "good_total": 52,
+            "good_false_positives": 10,
+            "defect_total": 12,
+            "defect_detected": 9,
+            "good_false_positive_rate": 0.19230769230769232
+        },
+        {
+            "group_id": "390",
+            "good_total": 53,
+            "good_false_positives": 10,
+            "defect_total": 11,
+            "defect_detected": 6,
+            "good_false_positive_rate": 0.18867924528301888
+        },
+        {
+            "group_id": "327",
+            "good_total": 55,
+            "good_false_positives": 10,
+            "defect_total": 9,
+            "defect_detected": 9,
+            "good_false_positive_rate": 0.18181818181818182
+        },
+        {
+            "group_id": "111",
+            "good_total": 56,
+            "good_false_positives": 10,
+            "defect_total": 8,
+            "defect_detected": 8,
+            "good_false_positive_rate": 0.17857142857142858
+        },
+        {
+            "group_id": "235",
+            "good_total": 61,
+            "good_false_positives": 10,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.16393442622950818
+        },
+        {
+            "group_id": "381",
+            "good_total": 47,
+            "good_false_positives": 9,
+            "defect_total": 17,
+            "defect_detected": 11,
+            "good_false_positive_rate": 0.19148936170212766
+        },
+        {
+            "group_id": "057",
+            "good_total": 60,
+            "good_false_positives": 9,
+            "defect_total": 4,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.15
+        },
+        {
+            "group_id": "071",
+            "good_total": 61,
+            "good_false_positives": 9,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.14754098360655737
+        },
+        {
+            "group_id": "357",
+            "good_total": 61,
+            "good_false_positives": 9,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.14754098360655737
+        },
+        {
+            "group_id": "003",
+            "good_total": 62,
+            "good_false_positives": 9,
+            "defect_total": 2,
+            "defect_detected": 2,
+            "good_false_positive_rate": 0.14516129032258066
+        },
+        {
+            "group_id": "081",
+            "good_total": 46,
+            "good_false_positives": 8,
+            "defect_total": 18,
+            "defect_detected": 18,
+            "good_false_positive_rate": 0.17391304347826086
+        },
+        {
+            "group_id": "172",
+            "good_total": 54,
+            "good_false_positives": 8,
+            "defect_total": 10,
+            "defect_detected": 10,
+            "good_false_positive_rate": 0.14814814814814814
+        },
+        {
+            "group_id": "193",
+            "good_total": 57,
+            "good_false_positives": 8,
+            "defect_total": 7,
+            "defect_detected": 7,
+            "good_false_positive_rate": 0.14035087719298245
+        },
+        {
+            "group_id": "396",
+            "good_total": 58,
+            "good_false_positives": 8,
+            "defect_total": 6,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.13793103448275862
+        },
+        {
+            "group_id": "359",
+            "good_total": 60,
+            "good_false_positives": 8,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.13333333333333333
+        },
+        {
+            "group_id": "384",
+            "good_total": 54,
+            "good_false_positives": 7,
+            "defect_total": 10,
+            "defect_detected": 7,
+            "good_false_positive_rate": 0.12962962962962962
+        },
+        {
+            "group_id": "302",
+            "good_total": 56,
+            "good_false_positives": 7,
+            "defect_total": 8,
+            "defect_detected": 8,
+            "good_false_positive_rate": 0.125
+        },
+        {
+            "group_id": "101",
+            "good_total": 61,
+            "good_false_positives": 7,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.11475409836065574
+        },
+        {
+            "group_id": "176",
+            "good_total": 62,
+            "good_false_positives": 7,
+            "defect_total": 2,
+            "defect_detected": 2,
+            "good_false_positive_rate": 0.11290322580645161
+        },
+        {
+            "group_id": "258",
+            "good_total": 59,
+            "good_false_positives": 6,
+            "defect_total": 5,
+            "defect_detected": 0,
+            "good_false_positive_rate": 0.1016949152542373
+        },
+        {
+            "group_id": "229",
+            "good_total": 60,
+            "good_false_positives": 6,
+            "defect_total": 4,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.1
+        },
+        {
+            "group_id": "387",
+            "good_total": 61,
+            "good_false_positives": 6,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.09836065573770492
+        },
+        {
+            "group_id": "183",
+            "good_total": 63,
+            "good_false_positives": 6,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.09523809523809523
+        },
+        {
+            "group_id": "365",
+            "good_total": 52,
+            "good_false_positives": 5,
+            "defect_total": 12,
+            "defect_detected": 11,
+            "good_false_positive_rate": 0.09615384615384616
+        },
+        {
+            "group_id": "063",
+            "good_total": 59,
+            "good_false_positives": 5,
+            "defect_total": 5,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.0847457627118644
+        },
+        {
+            "group_id": "049",
+            "good_total": 60,
+            "good_false_positives": 5,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.08333333333333333
+        },
+        {
+            "group_id": "174",
+            "good_total": 61,
+            "good_false_positives": 5,
+            "defect_total": 3,
+            "defect_detected": 3,
+            "good_false_positive_rate": 0.08196721311475409
+        },
+        {
+            "group_id": "274",
+            "good_total": 62,
+            "good_false_positives": 5,
+            "defect_total": 2,
+            "defect_detected": 2,
+            "good_false_positive_rate": 0.08064516129032258
+        },
+        {
+            "group_id": "012",
+            "good_total": 63,
+            "good_false_positives": 5,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.07936507936507936
+        },
+        {
+            "group_id": "013",
+            "good_total": 63,
+            "good_false_positives": 5,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.07936507936507936
+        },
+        {
+            "group_id": "308",
+            "good_total": 55,
+            "good_false_positives": 4,
+            "defect_total": 9,
+            "defect_detected": 8,
+            "good_false_positive_rate": 0.07272727272727272
+        },
+        {
+            "group_id": "052",
+            "good_total": 56,
+            "good_false_positives": 4,
+            "defect_total": 8,
+            "defect_detected": 8,
+            "good_false_positive_rate": 0.07142857142857142
+        },
+        {
+            "group_id": "332",
+            "good_total": 57,
+            "good_false_positives": 4,
+            "defect_total": 7,
+            "defect_detected": 7,
+            "good_false_positive_rate": 0.07017543859649122
+        },
+        {
+            "group_id": "022",
+            "good_total": 60,
+            "good_false_positives": 4,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.06666666666666667
+        },
+        {
+            "group_id": "114",
+            "good_total": 60,
+            "good_false_positives": 4,
+            "defect_total": 4,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.06666666666666667
+        },
+        {
+            "group_id": "079",
+            "good_total": 62,
+            "good_false_positives": 4,
+            "defect_total": 2,
+            "defect_detected": 2,
+            "good_false_positive_rate": 0.06451612903225806
+        },
+        {
+            "group_id": "194",
+            "good_total": 54,
+            "good_false_positives": 3,
+            "defect_total": 10,
+            "defect_detected": 9,
+            "good_false_positive_rate": 0.05555555555555555
+        },
+        {
+            "group_id": "047",
+            "good_total": 56,
+            "good_false_positives": 3,
+            "defect_total": 8,
+            "defect_detected": 7,
+            "good_false_positive_rate": 0.05357142857142857
+        },
+        {
+            "group_id": "110",
+            "good_total": 58,
+            "good_false_positives": 3,
+            "defect_total": 6,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.05172413793103448
+        },
+        {
+            "group_id": "140",
+            "good_total": 59,
+            "good_false_positives": 3,
+            "defect_total": 5,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.05084745762711865
+        },
+        {
+            "group_id": "119",
+            "good_total": 61,
+            "good_false_positives": 3,
+            "defect_total": 3,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.04918032786885246
+        },
+        {
+            "group_id": "366",
+            "good_total": 52,
+            "good_false_positives": 2,
+            "defect_total": 12,
+            "defect_detected": 10,
+            "good_false_positive_rate": 0.038461538461538464
+        },
+        {
+            "group_id": "135",
+            "good_total": 58,
+            "good_false_positives": 2,
+            "defect_total": 6,
+            "defect_detected": 5,
+            "good_false_positive_rate": 0.034482758620689655
+        },
+        {
+            "group_id": "309",
+            "good_total": 58,
+            "good_false_positives": 2,
+            "defect_total": 6,
+            "defect_detected": 6,
+            "good_false_positive_rate": 0.034482758620689655
+        },
+        {
+            "group_id": "214",
+            "good_total": 63,
+            "good_false_positives": 2,
+            "defect_total": 1,
+            "defect_detected": 1,
+            "good_false_positive_rate": 0.031746031746031744
+        },
+        {
+            "group_id": "377",
+            "good_total": 44,
+            "good_false_positives": 1,
+            "defect_total": 20,
+            "defect_detected": 16,
+            "good_false_positive_rate": 0.022727272727272728
+        },
+        {
+            "group_id": "282",
+            "good_total": 55,
+            "good_false_positives": 1,
+            "defect_total": 9,
+            "defect_detected": 6,
+            "good_false_positive_rate": 0.01818181818181818
+        },
+        {
+            "group_id": "216",
+            "good_total": 60,
+            "good_false_positives": 1,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.016666666666666666
+        },
+        {
+            "group_id": "287",
+            "good_total": 60,
+            "good_false_positives": 1,
+            "defect_total": 4,
+            "defect_detected": 4,
+            "good_false_positive_rate": 0.016666666666666666
+        }
+    ]
+}

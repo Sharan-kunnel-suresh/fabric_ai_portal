@@ -1,0 +1,22 @@
+{
+  "experiment": "TILDA V2",
+  "epochs": 10,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "patience": 4,
+  "imbalance": "sampler",
+  "image_size": 128,
+  "seed": 42,
+  "weight_decay": 0.0001,
+  "optimizer": "AdamW",
+  "scheduler": "OneCycleLR",
+  "model": "FabricNet",
+  "augmentation": {
+    "horizontal_flip": true,
+    "vertical_flip": true,
+    "rotation_degrees": 15,
+    "brightness": 0.15,
+    "contrast": 0.15,
+    "translation": 0.05
+  }
+}

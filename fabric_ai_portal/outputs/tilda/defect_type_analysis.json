@@ -1,0 +1,35 @@
+{
+    "dataset": "TILDA",
+    "threshold": 0.3198341429233551,
+    "threshold_source": "Validation Youden J",
+    "defect_type_results": {
+        "hole": {
+            "support": 46,
+            "detected": 45,
+            "missed": 1,
+            "recall": 0.9782608695652174,
+            "mean_defect_probability": 0.9397192007821539
+        },
+        "objects": {
+            "support": 140,
+            "detected": 114,
+            "missed": 26,
+            "recall": 0.8142857142857143,
+            "mean_defect_probability": 0.7052946557157806
+        },
+        "oil spot": {
+            "support": 91,
+            "detected": 79,
+            "missed": 12,
+            "recall": 0.8681318681318682,
+            "mean_defect_probability": 0.7831425805177007
+        },
+        "thread error": {
+            "support": 86,
+            "detected": 78,
+            "missed": 8,
+            "recall": 0.9069767441860465,
+            "mean_defect_probability": 0.846801707391129
+        }
+    }
+}

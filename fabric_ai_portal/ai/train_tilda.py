@@ -56,7 +56,7 @@ def run_epoch(model, loader, criterion, device, optimizer=None, scheduler=None):
     return total_loss / total, correct / total
 
 
-def save_checkpoint(path, model, optimizer, scheduler, epoch, history, best_val):
+def save_checkpoint(path, model, optimizer, scheduler, epoch, history, best_val, data_info):
     torch.save({
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
@@ -67,6 +67,12 @@ def save_checkpoint(path, model, optimizer, scheduler, epoch, history, best_val)
         "classes": ["good", "defect"],
         "dataset": "TILDA",
         "img_size": config.IMG_SIZE,
+        "normalization_mean": data_info["mean"],
+        "normalization_std": data_info["std"],
+        "training_class_counts": data_info["train_class_counts"],
+        "imbalance_strategy": data_info["imbalance_strategy"],
+        "experiment": "TILDA V2",
+        "learning_rate": optimizer.param_groups[0]["lr"],
     }, path)
 
 
@@ -121,9 +127,34 @@ def main():
         "cuda" if torch.cuda.is_available() else "cpu"
     )
 
-    output_dir = config.OUT_DIR / "tilda"
+    output_dir = config.OUT_DIR / "tilda_v2"
     output_dir.mkdir(parents=True, exist_ok=True)
-
+    experiment_config = {
+        "experiment": "TILDA V2",
+        "epochs": args.epochs,
+        "batch_size": args.batch,
+        "learning_rate": args.lr,
+        "patience": args.patience,
+        "imbalance": args.imbalance,
+        "image_size": config.IMG_SIZE,
+    "seed": config.SEED,
+    "weight_decay": config.WEIGHT_DECAY,
+    "optimizer": "AdamW",
+    "scheduler": "OneCycleLR",
+    "model": "FabricNet",
+    "augmentation": {
+        "horizontal_flip": True,
+        "vertical_flip": True,
+        "rotation_degrees": 15,
+        "brightness": 0.15,
+        "contrast": 0.15,
+        "translation": 0.05
+      }
+    }
+    (output_dir / "experiment_config.json").write_text(
+    json.dumps(experiment_config, indent=2)
+    )
+    
     print("=" * 55)
     print("TILDA FABRIC DEFECT MODEL TRAINING")
     print("=" * 55)
@@ -218,6 +249,7 @@ def main():
                 epoch,
                 history,
                 best_val,
+                info
             )
         else:
             bad_epochs += 1
@@ -230,6 +262,7 @@ def main():
             epoch,
             history,
             best_val,
+            info
         )
 
         elapsed = time.time() - start
@@ -258,3 +291,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+  

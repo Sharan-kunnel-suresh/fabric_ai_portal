@@ -94,16 +94,32 @@ def compute_mean_std(paths, size=config.IMG_SIZE):
     return mean.tolist(), std.tolist()
 
 
+
 def train_transform(mean, std):
     return T.Compose([
         T.Resize((config.IMG_SIZE, config.IMG_SIZE)),
+
+        # Orientation augmentation
         T.RandomHorizontalFlip(),
         T.RandomVerticalFlip(),
         T.RandomRotation(15),
-        T.ColorJitter(brightness=0.2, contrast=0.2),
+
+        # Moderate appearance variation
+        T.ColorJitter(
+            brightness=0.15,
+            contrast=0.15
+        ),
+
+        # Small positional variation
+        T.RandomAffine(
+            degrees=0,
+            translate=(0.05, 0.05)
+        ),
+
         T.ToTensor(),
         T.Normalize(mean, std),
     ])
+
 
 
 def evaluation_transform(mean, std):
