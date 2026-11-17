@@ -42,11 +42,28 @@ class PLCWorker(QThread):
         self.wait(3000)
 
     # ---------- helpers ----------
+    
     def _load_samples(self):
-        if (config.OUT_DIR / "splits.json").exists():
-            from ai.data_prep import load_splits
-            return load_splits()["test"]
-        return [str(p) for p in config.DATA_DIR.rglob("*.*")]
+        """Load actual TILDA test images for simulated camera inspection."""
+
+        test_dir = config.ROOT / "data" / "tilda_binary" / "test"
+
+        samples = []
+
+        for category in ("good", "defect"):
+            folder = test_dir / category
+
+            if folder.exists():
+                samples.extend(
+                    str(p)
+                    for p in folder.iterdir()
+                    if p.is_file() and p.suffix.lower() in {
+                        ".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"
+                    }
+                )
+
+        return sorted(samples)
+
 
     @staticmethod
     def truth_of(path):
@@ -78,7 +95,11 @@ class PLCWorker(QThread):
     def run(self):
         try:
             from ai.inference import Classifier
-            self.classifier = Classifier()
+            self.classifier = Classifier(device="cpu")
+            if not self._samples:
+                raise RuntimeError("No TILDA test images found.")
+            print("SCADA AI: TILDA V1 loaded")
+            print("Available inspection images:", len(self._samples))
         except Exception as e:                                # model missing -> GUI still works
             self.connection.emit(False, f"AI model not loaded: {e}")
         plc = None
