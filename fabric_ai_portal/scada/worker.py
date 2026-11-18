@@ -82,8 +82,9 @@ class PLCWorker(QThread):
         self._last_item = item
         if self.classifier is None or not self._samples:
             return                      # PLC will time out into FAULT (shows the fail-safe behaviour)
-        res = self.classify_path(random.choice(self._samples))   # stand-in for a camera grab
-        res.update(item_id=item, time=time.strftime("%H:%M:%S"))
+        sample_path = random.choice(self._samples)   # stand-in for a camera grab
+        res = self.classify_path(sample_path)
+        res.update(item_id=item, time=time.strftime("%H:%M:%S"),model="TILDA V1")
         conf = res["p_defect"] if res["is_defect"] else res["p_good"]
         self.write("AI_Result", 1 if res["is_defect"] else 0)
         self.write("AI_Confidence", float(conf))
