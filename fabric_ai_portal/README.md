@@ -87,6 +87,12 @@ python -m plc.opcua_server
 python run_scada.py
 ```
 
+**OR in One terminal**
+
+```powershell
+python run_scada.py --with-sim
+```
+
 Connect SCADA to:
 
 ```text
