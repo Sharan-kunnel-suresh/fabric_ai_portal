@@ -1,524 +1,354 @@
-# AI-Based Industrial Fabric Defect Detection and Quality Monitoring System
+# Fabric AI Portal
 
-**Project:** Fabric AI Portal\
-**Stack:** Python, PyTorch, PyQt5, OPC UA (`asyncua`)\
-**Dataset:** TILDA 400 × 64 × 64 patches\
-**Integrated model:** TILDA V1, `outputs/tilda/best.pt`\
-**PLC:** Local simulated OPC UA PLC
+Python-based industrial fabric inspection project: **PyTorch fabric-defect classifier + PyQt5 SCADA + OPC UA PLC (simulated).**
 
-## 1. Project overview
-
-This project is a software prototype for AI-assisted fabric quality
-inspection. A PyTorch image classifier predicts whether a fabric image
-is **good** or **defective**. The trained model is integrated into a
-PyQt5 SCADA application. The SCADA worker communicates with a simulated
-PLC using OPC UA, sends classification results and displays production
-information.
-
-The current demonstration uses images selected from the prepared TILDA
-test set instead of a live industrial camera. It uses a simulated OPC UA
-PLC; a physical Siemens S7-1500 has not been connected or tested.
-
-### Objectives
-
-- Prepare a real fabric image dataset for binary classification.
-- Train and evaluate a deep-learning classifier.
-- Integrate the trained model into a SCADA application.
-- Exchange inspection signals with a simulated PLC through OPC UA.
-- Display production state, inspection results and statistics.
-
-## 2. System workflow
-
-The project has two stages:
-
-**Model development:** TILDA dataset → data preparation → model training
-→ evaluation → saved checkpoint.
-
-**Simulated production:** PLC camera trigger → SCADA worker selects a
-TILDA test image → model inference → result written to PLC tags → SCADA
-displays production and inspection information.
-
-```text
-TILDA images
-    |
-    v
-Data preparation and group-based split
-    |
-    v
-PyTorch FabricNet training
-    |
-    v
-Evaluation and saved checkpoint
-    |
-    v
-TILDA V1 inference
-    |
-    v
-SCADA worker <---- OPC UA ----> Simulated PLC
-    |
-    v
-SCADA dashboard, process windows and statistics
-```
-
-## 3. Project structure
+## Project structure
 
 ```text
 fabric_ai_portal/
-|-- ai/
-|   |-- data_prep.py
-|   |-- model.py
-|   |-- train.py
-|   |-- evaluate.py
-|   |-- inference.py
-|   |-- tilda_data_prep.py
-|   |-- train_tilda.py
-|   |-- evaluate_tilda.py
-|   |-- evaluate_tilda_v2.py
-|   |-- tilda_category_analysis.py
-|   |-- tilda_error_analysis.py
-|   |-- tilda_group_analysis.py
-|-- data/
-|   |-- raw/tilda/                 # Original five TILDA categories
-|   |-- tilda_binary/              # Prepared train/val/test folders
-|   |-- tilda_manifest.csv
-|-- outputs/
-|   |-- tilda/                     # V1 checkpoint, metrics and plots
-|   |-- tilda_v2/                  # V2 experiment results
-|   |-- tilda_data_stats.json
-|-- plc/
-|   |-- __init__.py
-|   |-- tags.py
-|   |-- opcua_server.py
-|   |-- client.py
-|-- scada/
-|   |-- __init__.py
-|   |-- main_window.py
-|   |-- plc_window.py
-|   |-- process_windows.py
-|   |-- stats_window.py
-|   |-- training_window.py
-|   |-- widgets.py
-|   |-- worker.py
-|-- docs/
-|-- config.py
-|-- prepare_dataset.py
-|-- make_synthetic_dataset.py
-|-- prepare_tilda.py
-|-- run_scada.py
-|-- requirements.txt
-|-- README.md
+│
+├── config.py                    # Paths, image size and OPC UA endpoint
+├── prepare_dataset.py           # General dataset preparation
+├── prepare_tilda.py             # TILDA dataset preparation and group split
+├── make_synthetic_dataset.py    # Synthetic images for testing
+│
+├── ai/
+│   ├── data_prep.py              # General data preparation
+│   ├── model.py                  # FabricNet neural network
+│   ├── train.py                  # General model training
+│   ├── evaluate.py               # General model evaluation
+│   ├── inference.py              # Model inference
+│   ├── tilda_data_prep.py        # TILDA data preparation
+│   ├── train_tilda.py            # TILDA V1 training
+│   ├── evaluate_tilda.py         # TILDA V1 evaluation
+│   ├── evaluate_tilda_v2.py      # TILDA V2 evaluation
+│   ├── tilda_category_analysis.py
+│   ├── tilda_error_analysis.py
+│   └── tilda_group_analysis.py
+│
+├── plc/
+│   ├── tags.py                   # PLC tag definitions
+│   ├── opcua_server.py           # Simulated OPC UA PLC
+│   └── client.py                 # OPC UA client
+│
+├── scada/
+│   ├── main_window.py            # Main SCADA dashboard
+│   ├── process_windows.py        # AI inspection and conveyor windows
+│   ├── stats_window.py           # Production statistics
+│   ├── plc_window.py             # PLC tag monitoring
+│   ├── training_window.py        # AI training results
+│   ├── worker.py                 # PLC communication and AI inference
+│   └── widgets.py                # Reusable GUI widgets
+│
+├── data/
+│   ├── raw/tilda/                # Original TILDA categories
+│   ├── tilda_binary/             # Prepared train/val/test data
+│   └── tilda_manifest.csv        # Dataset split information
+│
+├── outputs/
+│   ├── tilda/                    # V1 checkpoint and evaluation results
+│   ├── tilda_v2/                 # V2 experiment results
+│   └── tilda_data_stats.json     # Normalization statistics
+│
+├── docs/                         # Project documentation
+├── requirements.txt
+├── run_scada.py                  # Start SCADA
+└── README.md
 ```
 
-`.venv/` and `__pycache__/` are generated environment/cache folders, not
-source modules. Check the course submission rules before including large
-datasets and model checkpoints in an archive.
+## Run it
 
-## 4. Dataset
-
-The project uses the TILDA 400 × 64 × 64 patches dataset. Its original
-categories are:
-
-- `good`
-- `hole`
-- `objects`
-- `oil spot`
-- `thread error`
-
-For the current model, the task is binary classification: `good` remains
-good, and the four defect categories are combined into `defect`.
-
-Original category Images
-
----
-
-Good 23,170
-Hole 337
-Objects 837
-Oil spot 636
-Thread error 620
-**Total** **25,600**
-
-Binary class Images
-
----
-
-Good 23,170
-Defect 2,430
-**Total** **25,600**
-
-### Group-based split
-
-The preparation script groups patches by their source-image identifier
-(filename prefix before `_patch`) and assigns whole groups to one split.
-This helps prevent patches from the same source image appearing in
-multiple splits.
-
-Split Total Good Defect
-
----
-
-Train 17,920 16,214 1,706
-Validation 3,840 3,479 361
-Test 3,840 3,477 363
-**Total** **25,600** **23,170** **2,430**
-
-The split is approximately 70%/15%/15%. `prepare_tilda.py` writes
-`data/tilda_manifest.csv`, recording the original category, binary
-label, group identifier and split.
-
-## 5. Data preparation
-
-The TILDA data pipeline is implemented in `ai/tilda_data_prep.py`. It:
-
-- Loads the prepared train, validation and test folders.
-- Resizes images to 128 × 128 pixels.
-- Converts images to tensors.
-- Calculates channel mean and standard deviation using training
-  images.
-- Normalises images using those statistics.
-- Applies training augmentation (horizontal/vertical flips, rotation
-  and colour jitter).
-- Uses `WeightedRandomSampler` to help address class imbalance.
-- Applies the same training-derived normalisation statistics during
-  validation, testing and inference.
-
-The statistics are saved in `outputs/tilda_data_stats.json`. Validation
-and test images are not augmented.
-
-## 6. Model and training
-
-The model is implemented in `ai/model.py` as `FabricNet`. It uses
-convolutional feature extraction and residual blocks followed by a
-classification head. It produces two class scores:
-
-- Class 0: `good`
-- Class 1: `defect`
-
-PyTorch is used for model training and inference.
-
-Two TILDA experiments were retained:
-
-- **V1:** baseline training configuration.
-- **V2:** experiment with additional training augmentation, including
-  small translations.
-
-V1 was selected for SCADA integration because it achieved better test
-ROC-AUC and higher defect recall at its validation-selected threshold.
-V2 is retained as a comparison experiment.
-
-The V1 checkpoint is `outputs/tilda/best.pt`. Its normalisation values
-are stored separately in `outputs/tilda_data_stats.json`; the inference
-module loads both.
-
-## 7. Model evaluation
-
-The V1 threshold was selected on the validation set using the Youden J
-criterion and then applied to the test set.
-
-### TILDA V1 test results
-
-Metric Result
-
----
-
-Accuracy 88.49%
-Precision 44.44%
-Recall 87.05%
-F1-score 58.85%
-ROC-AUC 0.9472
-Selected threshold 0.3198
-
-### Confusion matrix
-
-                    Predicted good   Predicted defect
-
----
-
-Actual good 3,082 (TN) 395 (FP)
-Actual defect 47 (FN) 316 (TP)
-
-Accuracy is the proportion of correct predictions. Precision measures
-how many predicted defects are actual defects. Recall measures how many
-actual defects are detected. F1-score is the harmonic mean of precision
-and recall. ROC-AUC measures ranking performance across classification
-thresholds.
-
-The results show good defect recall, but relatively low precision and a
-substantial number of false alarms. This is an important limitation for
-production use.
-
-### V1 versus V2
-
-Test metric V1 V2
-
----
-
-ROC-AUC 0.9472 0.8895
-Recall at selected threshold 87.05% 68.04%
-Precision at selected threshold 44.44% 43.87%
-F1-score 58.85% 53.35%
-Accuracy at selected threshold 88.49% 88.75%
-
-V1 is the model used by the current SCADA integration.
-
-### Analysis by original defect category
-
-The deployed model is binary, but `ai/tilda_category_analysis.py`
-analyses its binary predictions grouped by the original defect category.
-
-Category Detected / total Recall
-
----
-
-Hole 45 / 46 97.83%
-Objects 114 / 140 81.43%
-Oil spot 79 / 91 86.81%
-Thread error 78 / 86 90.70%
-
-This is category-wise analysis, not multi-class defect prediction.
-
-## 8. AI inference and SCADA integration
-
-`ai/inference.py` loads the V1 checkpoint and the saved normalisation
-statistics, prepares the image and runs the model in evaluation mode.
-Its prediction includes the label, defect/good probabilities, decision
-threshold and inference latency.
-
-`scada/worker.py` loads the classifier and communicates with the PLC
-through `plc/client.py`. When a new camera trigger is detected, the
-worker selects an image from the prepared TILDA test set, runs inference
-and writes the result to PLC tags.
-
-**Camera input is simulated:** the current worker selects a dataset
-image; it does not capture a live camera frame.
-
-## 9. PLC simulation and OPC UA
-
-The simulated PLC uses the Python `asyncua` library. Its local endpoint
-is:
-
-```text
-opc.tcp://127.0.0.1:4840/fabric/plc
-```
-
-The server is implemented in `plc/opcua_server.py`, the client in
-`plc/client.py`, and tag definitions in `plc/tags.py`.
-
-Tag Direction Purpose
-
----
-
-`Start_Cmd` SCADA → PLC Start production
-`Stop_Cmd` SCADA → PLC Stop production
-`EStop_Cmd` SCADA → PLC Emergency-stop command
-`Reset_Cmd` SCADA → PLC Reset fault/E-stop
-`Belt_Speed` SCADA → PLC Conveyor speed setting
-`Camera_Trigger` PLC → SCADA/AI Request inspection
-`AI_Done` SCADA/AI → PLC Classification completed
-`AI_Result` SCADA/AI → PLC 0 = good, 1 = defect
-`AI_Confidence` SCADA/AI → PLC Confidence of predicted class
-`State` PLC → SCADA Production state
-`Motor_Run` PLC → SCADA Motor status
-`Reject_Pusher` PLC → SCADA Rejection actuator status
-`Lamp_Green` PLC → SCADA Normal-operation indicator
-`Lamp_Red` PLC → SCADA Fault/E-stop indicator
-`Item_Present` PLC → SCADA Item-presence signal
-
-The project has been tested with the simulated OPC UA server. A physical
-Siemens S7-1500 has not been connected or tested.
-
-## 10. SCADA application
-
-The user interface is developed using PyQt5.
-
----
-
-File Responsibility
-
----
-
-`scada/main_window.py` Main dashboard, production
-controls, connection status and
-navigation
-
-`scada/process_windows.py` AI inspection and conveyor process
-windows
-
-`scada/stats_window.py` Production counters, charts,
-history and CSV export
-
-`scada/plc_window.py` OPC UA tag monitoring and manual
-tag writing
-
-`scada/training_window.py` AI training/evaluation information
-
-`scada/widgets.py` Reusable interface widgets
-
-`scada/worker.py` Background PLC communication and AI
-inspection worker
-
----
-
-The worker runs in a background thread so PLC communication and model
-inference do not block the main GUI thread.
-
-## 11. Installation
-
-The development environment used Python 3.11 on Windows.
-
-From the project root, in PowerShell:
+The tested setup uses two terminals: one for the simulated PLC and one for SCADA.
 
 ```powershell
+# 1) Open the project folder
+cd path\to\fabric_ai_portal
+
+# 2) Create virtual environment (first time only)
 python -m venv .venv
+
+# 3) Activate virtual environment
 .\.venv\Scripts\Activate.ps1
+
+# 4) Install dependencies (first time only)
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-If PowerShell blocks activation, use the virtual environment's Python
-executable directly:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-## 12. Dataset preparation and AI commands
-
-The original TILDA categories should be placed in:
-
-```text
-data/raw/tilda/
-    good/
-    hole/
-    objects/
-    oil spot/
-    thread error/
-```
-
-Prepare the binary group-based splits:
-
-```powershell
-python prepare_tilda.py
-```
-
-This creates `data/tilda_binary/` and `data/tilda_manifest.csv`. Do not
-rerun it unnecessarily if you want to preserve the existing split.
-
-Train TILDA V1:
-
-```powershell
-python -m ai.train_tilda
-```
-
-Evaluate V1:
-
-```powershell
-python -m ai.evaluate_tilda
-```
-
-Evaluate V2:
-
-```powershell
-python -m ai.evaluate_tilda_v2
-```
-
-Run inference on an existing image (replace the example path if that
-filename is not present):
-
-```powershell
-python -m ai.inference "data/tilda_binary/test/good/good_003_patch0-2.png"
-```
-
-The existing V1 checkpoint is already available, so retraining is not
-required to run SCADA.
-
-## 13. Starting the SCADA demonstration
-
-Use two terminals from the project root, with the virtual environment
-activated in each.
-
-**Terminal 1 --- simulated PLC:**
+**Terminal 1 — Start simulated PLC**
 
 ```powershell
 python -m plc.opcua_server
 ```
 
-Keep this terminal running.
-
-**Terminal 2 --- SCADA:**
+**Terminal 2 — Start SCADA application**
 
 ```powershell
 python run_scada.py
 ```
 
-In the application:
+Connect SCADA to:
 
-1.  Connect to `opc.tcp://127.0.0.1:4840/fabric/plc`.
-2.  Confirm that the PLC connection is established.
-3.  Start the simulated production line.
-4.  Open the PLC simulation window to monitor tags.
-5.  Trigger an inspection and observe `AI_Done`, `AI_Result` and
-    `AI_Confidence`.
-6.  Open Statistics to inspect the recorded production information.
+```text
+opc.tcp://127.0.0.1:4840/fabric/plc
+```
 
-The local demonstration server does not have certificates or an
-encrypted endpoint configured. This setup is intended for local testing,
-not an untrusted production network.
+Keep the PLC server terminal running while using SCADA.
 
-## 14. Testing performed
+In SCADA, press **Connect**, then **START**. Open the PLC simulation window to monitor tags and trigger inspections. Open **Statistics** to view production counters and inspection results.
 
-The following have been exercised in the development environment:
+## Requirements
 
-- TILDA preparation and group-based splitting.
-- V1 and V2 training experiments.
-- Model evaluation and comparison.
-- Single-image V1 inference.
-- Loading TILDA V1 from the SCADA worker.
-- Starting the simulated OPC UA PLC and connecting SCADA.
-- Monitoring and writing PLC tags.
-- Triggering simulated AI inspections and observing classification
-  results.
-- Opening the SCADA process and statistics windows.
+- Windows 10/11
+- Python 3.11
+- Dependencies listed in `requirements.txt`
 
-These are software-simulation tests, not tests on a physical production
-line.
+Required files for the existing TILDA V1 demonstration:
 
-## 15. Limitations and future work
+```text
+outputs/tilda/best.pt
+outputs/tilda_data_stats.json
+data/tilda_binary/test/good/
+data/tilda_binary/test/defect/
+```
 
-### Limitations
+These files must be present before launching SCADA.
 
-1.  **No live camera:** inspection uses a randomly selected TILDA test
-    image.
-2.  **Simulated PLC:** the local OPC UA server was tested; physical
-    S7-1500 communication was not.
-3.  **Binary output:** the model predicts good or defect, not the
-    specific defect subtype.
-4.  **False alarms:** V1 precision is relatively low at the selected
-    threshold.
-5.  **Production counters:** counter consistency should be checked
-    before using statistics for real production reporting.
-6.  **OPC UA security:** the local simulation does not have certificates
-    or encryption configured.
+## Dataset
 
-### Future improvements
+**Dataset:** TILDA 400 × 64 × 64 fabric patches.
 
-- Integrate a live camera using OpenCV.
-- Test with a physical Siemens S7-1500.
-- Improve precision while maintaining an acceptable defect recall.
-- Collect more representative defective samples.
-- Extend the model to classify individual defect types.
-- Validate production counters and actuator timing over longer runs.
-- Configure OPC UA authentication, certificates and encryption.
+Original categories:
 
-## 16. Conclusion
+- good
+- hole
+- objects
+- oil spot
+- thread error
 
-This project demonstrates an end-to-end software prototype for AI-based
-fabric quality inspection. A PyTorch model trained on TILDA images
-classifies fabric patches as good or defective. The model is integrated
-with a PyQt5 SCADA application, which exchanges inspection information
-with a simulated PLC through OPC UA.
+For the current model, the four defect categories are combined into one `defect` class. The model performs binary classification: `good` or `defect`.
 
-The prototype demonstrates how image-based machine learning can be
-connected to industrial monitoring concepts. It provides a foundation
-for future work with live camera acquisition, physical PLC communication
-and further improvements to classification performance.
+| Original category |     Images |
+| ----------------- | ---------: |
+| Good              |     23,170 |
+| Hole              |        337 |
+| Objects           |        837 |
+| Oil spot          |        636 |
+| Thread error      |        620 |
+| **Total**         | **25,600** |
+
+### Dataset preparation
+
+Original TILDA folders are placed under:
+
+```text
+data/raw/tilda/
+├── good/
+├── hole/
+├── objects/
+├── oil spot/
+└── thread error/
+```
+
+Prepare the dataset:
+
+```powershell
+python prepare_tilda.py
+```
+
+The script creates `data/tilda_binary/` and `data/tilda_manifest.csv`.
+
+Patches belonging to the same source image are assigned to the same split to reduce data leakage.
+
+| Split      |      Total |       Good |    Defect |
+| ---------- | ---------: | ---------: | --------: |
+| Train      |     17,920 |     16,214 |     1,706 |
+| Validation |      3,840 |      3,479 |       361 |
+| Test       |      3,840 |      3,477 |       363 |
+| **Total**  | **25,600** | **23,170** | **2,430** |
+
+Do not rerun preparation unless you intend to rebuild the dataset split.
+
+## AI training and evaluation
+
+The TILDA data pipeline includes:
+
+- Image resizing to 128 × 128.
+- Training-set normalization.
+- Training data augmentation.
+- WeightedRandomSampler for class imbalance.
+- Separate training, validation and testing datasets.
+
+Run the following commands:
+
+```powershell
+# Train TILDA V1
+python -m ai.train_tilda
+
+# Evaluate TILDA V1
+python -m ai.evaluate_tilda
+
+# Evaluate TILDA V2
+python -m ai.evaluate_tilda_v2
+
+# Run inference on an image
+python -m ai.inference "data/tilda_binary/test/good/example.png"
+```
+
+The integrated SCADA application uses the existing V1 checkpoint:
+
+```text
+outputs/tilda/best.pt
+```
+
+Normalization values are loaded from:
+
+```text
+outputs/tilda_data_stats.json
+```
+
+Training is not required every time SCADA is started.
+
+## Model evaluation — TILDA V1
+
+The V1 classification threshold was selected using the validation set with the Youden J criterion.
+
+| Metric             | Test result |
+| ------------------ | ----------: |
+| Accuracy           |      88.49% |
+| Precision          |      44.44% |
+| Recall             |      87.05% |
+| F1-score           |      58.85% |
+| ROC-AUC            |      0.9472 |
+| Selected threshold |      0.3198 |
+
+### V1 vs V2 comparison
+
+| Test metric |     V1 |     V2 |
+| ----------- | -----: | -----: |
+| ROC-AUC     | 0.9472 | 0.8895 |
+| Recall      | 87.05% | 68.04% |
+| Precision   | 44.44% | 43.87% |
+| F1-score    | 58.85% | 53.35% |
+| Accuracy    | 88.49% | 88.75% |
+
+**Selected model: TILDA V1.**
+
+V1 achieved higher test ROC-AUC and defect recall than V2 at the selected threshold. V2 is retained as an experimental comparison.
+
+### Defect category analysis
+
+The deployed model performs binary classification. The following results represent separate analysis of binary predictions grouped by original defect category.
+
+| Defect category | Detected / Total | Recall |
+| --------------- | ---------------: | -----: |
+| Hole            |          45 / 46 | 97.83% |
+| Objects         |        114 / 140 | 81.43% |
+| Oil spot        |          79 / 91 | 86.81% |
+| Thread error    |          78 / 86 | 90.70% |
+
+## SCADA and PLC integration
+
+The SCADA application is developed using PyQt5.
+
+The background worker in `scada/worker.py` loads the TILDA V1 model, monitors PLC tags and performs image classification when an inspection trigger is received.
+
+### Main PLC tags
+
+| Tag              | Direction   | Description              |
+| ---------------- | ----------- | ------------------------ |
+| `Start_Cmd`      | SCADA → PLC | Start production         |
+| `Stop_Cmd`       | SCADA → PLC | Stop production          |
+| `EStop_Cmd`      | SCADA → PLC | Emergency stop           |
+| `Reset_Cmd`      | SCADA → PLC | Reset fault/E-stop       |
+| `Belt_Speed`     | SCADA → PLC | Conveyor speed           |
+| `Camera_Trigger` | PLC → SCADA | Request AI inspection    |
+| `AI_Done`        | SCADA → PLC | Classification completed |
+| `AI_Result`      | SCADA → PLC | 0 = good, 1 = defect     |
+| `AI_Confidence`  | SCADA → PLC | Prediction confidence    |
+| `State`          | PLC → SCADA | Production state         |
+| `Motor_Run`      | PLC → SCADA | Conveyor motor status    |
+| `Reject_Pusher`  | PLC → SCADA | Rejection actuator       |
+| `Lamp_Green`     | PLC → SCADA | Normal operation         |
+| `Lamp_Red`       | PLC → SCADA | Fault/E-stop             |
+| `Item_Present`   | PLC → SCADA | Item on conveyor         |
+
+### SCADA windows
+
+| File                       | Function                                      |
+| -------------------------- | --------------------------------------------- |
+| `scada/main_window.py`     | Main dashboard and production controls        |
+| `scada/process_windows.py` | AI inspection and conveyor views              |
+| `scada/stats_window.py`    | Counters, charts and inspection history       |
+| `scada/plc_window.py`      | PLC tag monitoring and writing                |
+| `scada/training_window.py` | AI training and evaluation information        |
+| `scada/widgets.py`         | Reusable GUI components                       |
+| `scada/worker.py`          | Background PLC communication and AI inference |
+
+## Grading items and implementation
+
+| Grading item          | Main files                             | Implementation                                             |
+| --------------------- | -------------------------------------- | ---------------------------------------------------------- |
+| Project description   | `docs/`                                | Project documentation                                      |
+| Dataset               | `prepare_tilda.py`                     | TILDA dataset preparation                                  |
+| Data preparation      | `ai/tilda_data_prep.py`                | Resize, normalization, augmentation and imbalance handling |
+| Model configuration   | `ai/model.py`                          | FabricNet architecture                                     |
+| Model training        | `ai/train_tilda.py`                    | Model training and checkpoint saving                       |
+| Model evaluation      | `ai/evaluate_tilda.py`                 | Metrics, confusion matrix and ROC-AUC                      |
+| Model integration     | `ai/inference.py`, `scada/worker.py`   | AI inference triggered by PLC                              |
+| Main window           | `scada/main_window.py`                 | Dashboard and production controls                          |
+| Statistics            | `scada/stats_window.py`                | Counters, charts and history                               |
+| Process windows       | `scada/process_windows.py`             | AI inspection and conveyor                                 |
+| PLC simulation window | `scada/plc_window.py`                  | OPC UA tag monitoring                                      |
+| Training window       | `scada/training_window.py`             | Training/evaluation information                            |
+| OPC UA simulation     | `plc/opcua_server.py`, `plc/client.py` | Simulated PLC communication                                |
+
+## Testing and limitations
+
+**Tested:**
+
+- TILDA dataset preparation and group-based splitting.
+- V1 and V2 training and evaluation.
+- Single-image AI inference.
+- Loading TILDA V1 inside SCADA.
+- Local OPC UA PLC connection.
+- PLC tag monitoring and writing.
+- AI inspection triggers and classification results.
+- SCADA dashboard, process windows and statistics.
+
+**Limitations:**
+
+- **Camera:** The worker selects a random image from the TILDA test set for each inspection. No live camera is connected.
+- **PLC:** The simulated OPC UA PLC has been tested. A physical Siemens S7-1500 has not been connected or tested.
+- **Classification:** The model predicts `good` or `defect`; it does not identify individual defect types during inference.
+- **False alarms:** V1 has relatively low precision at the selected threshold.
+- **Production counters:** Counter consistency should be checked before using the statistics as real production measurements.
+- **OPC UA security:** The local demonstration endpoint does not have certificates or encryption configured.
+
+## Troubleshooting
+
+**SCADA reports `ConnectionRefusedError`:**
+
+- Make sure `python -m plc.opcua_server` is running.
+- Check the endpoint: `opc.tcp://127.0.0.1:4840/fabric/plc`.
+- Click Connect again.
+
+**A Python package is missing:**
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+**Model checkpoint not found:**
+
+- Check that `outputs/tilda/best.pt` exists.
+- Check that `outputs/tilda_data_stats.json` exists.
+
+**No inspection images found:**
+
+- Check that `data/tilda_binary/test/good/` and `data/tilda_binary/test/defect/` contain images.
+
+## Conclusion
+
+Fabric AI Portal combines a PyTorch fabric-defect classifier, a PyQt5 SCADA application and a simulated OPC UA PLC. The prototype demonstrates dataset-based AI inspection, model inference and communication of inspection results to a simulated industrial monitoring and control system.
