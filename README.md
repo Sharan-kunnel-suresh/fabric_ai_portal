@@ -7,13 +7,13 @@ Python-based industrial fabric inspection project: **PyTorch fabric-defect class
 ```text
 fabric_ai_portal/
 │
-├── config.py                    # Paths, image size and OPC UA endpoint
-├── prepare_dataset.py           # General dataset preparation
-├── prepare_tilda.py             # TILDA dataset preparation and group split
-├── make_synthetic_dataset.py    # Synthetic images for testing
+├── config.py                    # Paths, image size  and OPC UA endpoint
+├── prepare_dataset.py           # General  dataset preparation
+├── prepare_tilda.py             #   TILDA dataset preparation and group split
+├── make_synthetic_dataset.py    #  Synthetic images for testing
 │
 ├── ai/
-│   ├── data_prep.py              # General data preparation
+│   ├── data_prep.py              # cGeneral data preparation
 │   ├── model.py                  # FabricNet neural network
 │   ├── train.py                  # General model training
 │   ├── evaluate.py               # General model evaluation
@@ -27,7 +27,7 @@ fabric_ai_portal/
 │   └── tilda_group_analysis.py
 │
 ├── plc/
-│   ├── tags.py                   # PLC tag definitions
+│   ├── tags.py                   # PLC tag   definitions
 │   ├── opcua_server.py           # Simulated OPC UA PLC
 │   └── client.py                 # OPC UA client
 │
